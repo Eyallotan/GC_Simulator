@@ -2,8 +2,8 @@
  *	Created by Eyal Lotan and Dor Sura.
  */
 
-#ifndef FLASHGC_SCHEDULEDGC_H
-#define FLASHGC_SCHEDULEDGC_H
+#ifndef FLASHGC_ALGORUNNER_H
+#define FLASHGC_ALGORUNNER_H
 
 #include "MyRand.h"
 #include "FTL.hpp"
@@ -19,7 +19,7 @@
 using std::map;
 using std::vector;
 
-class ScheduledGC{
+class AlgoRunner{
 public:
 
     ////// member elements:  //////
@@ -66,8 +66,8 @@ public:
      * you should note that some changes may be needed to use only the parameters passed to the class
      * c'tor (and this is better coding practice).
      */
-    ScheduledGC(long long number_of_pages, PageDistribution page_dist) : number_of_pages(number_of_pages), page_dist(page_dist),
-                                                                                               ftl(nullptr), data(nullptr), reach_steady_state(true), print_mode(false){
+    AlgoRunner(long long number_of_pages, PageDistribution page_dist) : number_of_pages(number_of_pages), page_dist(page_dist),
+                                                                        ftl(nullptr), data(nullptr), reach_steady_state(true), print_mode(false){
 
         /* generate a writing sequecne according to the desired writing page_dist */
         if (page_dist == UNIFORM){
@@ -90,7 +90,7 @@ public:
         initializeFTL();
     }
 
-    ~ScheduledGC() {
+    ~AlgoRunner() {
         delete [] writing_sequence;
         delete [] logical_pages_location_map;
         delete [] data;
@@ -468,4 +468,4 @@ public:
 
 
 
-#endif //FLASHGC_SCHEDULEDGC_H
+#endif //FLASHGC_ALGORUNNER_H

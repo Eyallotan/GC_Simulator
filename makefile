@@ -1,6 +1,6 @@
 OBJS	= Auxilaries.o main.o
 SOURCE	= Auxilaries.cpp main.cpp
-HEADER	= Auxilaries.h FTL.hpp ListItem.h main.hpp MyRand.h ScheduledGC.h
+HEADER	= Auxilaries.h FTL.hpp ListItem.h main.hpp MyRand.h AlgoRunner.h
 OUT	= Simulator
 CC	 = g++
 FLAGS	 = -g -c -Wall

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include "ScheduledGC.h"
+#include "AlgoRunner.h"
 using namespace std;
 
 /* get parameters from command line
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 	seed();
 
 	/* generate scheduledGC object */
-    ScheduledGC* scg = new ScheduledGC(NUMBER_OF_PAGES,page_dist);
+    AlgoRunner* scg = new AlgoRunner(NUMBER_OF_PAGES, page_dist);
 
     /* if you wish to activate print mode remove comment */
     //scg->setPrintMode(true);
