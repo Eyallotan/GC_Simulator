@@ -38,6 +38,23 @@ These are the parameters you must set for each simulation:
 
 For example: 
 ```bash
+$ ./Simulator 64 50 32 4096 100000 uniform greedy
+Starting GC Simulator!
+Physical Blocks:        64
+Logical Blocks:         50
+Pages/Block:            32
+Page Size:              4096
+Alpha:                  0.78125
+Over Provisioning:      0.28
+Number of Pages:        100000
+Page Distribution:      uniform
+GC Algorithm:           greedy
+Starting Greedy Algorithm simulation...
+Reaching Steady State...
+Steady State Reached...
+Simulation Results:
+Number of erases: 7395. Write Amplification: 2.36627
+
 $ ./Simulator 64 50 32 4096 100000 uniform greedy_lookahead
 Starting GC Simulator!
 Physical Blocks:        64
@@ -55,7 +72,24 @@ Steady State Reached...
 Simulation Results:
 Number of erases: 7333. Write Amplification: 2.34665
 
-add generational example with generation selection (2)
+$ ./Simulator 64 50 32 4096 100000 uniform generational
+Starting GC Simulator!
+Physical Blocks:        64
+Logical Blocks:         50
+Pages/Block:            32
+Page Size:              4096
+Alpha:                  0.78125
+Over Provisioning:      0.28
+Number of Pages:        100000
+Page Distribution:      uniform
+GC Algorithm:           generational
+Starting Generational Algorithm simulation...
+Enter number of generations for Generational GC:
+2
+Reaching Steady State...
+Steady State Reached...
+Simulation Results:
+Number of erases: 7053. Write Amplification: 2.25694
 ```
 
 ### Steady State 
