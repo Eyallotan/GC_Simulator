@@ -101,7 +101,7 @@ We use steady state assumption (as stated in the [project report](https://github
 You can also adjust the number of writes to use to achieve steady state (this can be better integrated in the future to be part of the adjustable parameters..). 
 
 ### Print Mode
-We have implemented a print mode option that reflects block and page statistics as the simulator runs, along with information about the number of logical writes and more useful information. The print mode option is turned off by default and should not be used unless you redirect your output to a file (otherwise print time will probably make the simulation run for a very long time). if you wish to turn on the print you can comment out the following line in ```main.cpp```:
+We have implemented a print mode option that reflects block and page statistics as the simulator runs, along with information about the number of logical writes and more useful information. The print mode option is turned off by default and should not be used unless you redirect your output to a file (otherwise print time will probably make the simulation run for a very long time). if you wish to turn on the print mode you can comment out the following line in ```main.cpp```:
 ```cpp
 64.  /* if you wish to activate print mode remove comment */
 65.    //scg->setPrintMode(true);
