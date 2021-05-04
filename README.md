@@ -29,7 +29,7 @@ These are the parameters you must set for each simulation:
 7. GC algorithm
 8. Optional parameter: Filename to redirect output to 
 
-* For data distribution parameter choose between ```uniform``` or ```hot/cold```. If you choose hot/cold distribution, you will be asked to choose the hot page percentage and the probability for a hot page.
+* For data distribution parameter choose between ```uniform``` or ```hot_cold```. If you choose hot/cold distribution, you will be asked to choose the hot page percentage and the probability for a hot page.
 * For GC algorithm choose between the following:
 1. ```greedy```
 2. ```greedy_lookahead```
