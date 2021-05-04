@@ -32,7 +32,7 @@ public:
     ListItem(unsigned int page_number, unsigned long long location) : page_number(page_number), location_list(vector<unsigned long long>({location})) {}
 
     /* add a location (index) to the ListItem */
-    void addLocation(long long location) {
+    void addLocation(unsigned long long location) {
         location_list.push_back(location);
     }
 

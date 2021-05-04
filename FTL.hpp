@@ -500,7 +500,7 @@ public:
 
 	}
 
-	void printN() {
+	void printV() {
 	    cout<<"blocks status:"<<endl;
         for (int i = 0; i < PAGES_PER_BLOCK+1; i++) {
             cout<<"V["<<i<<"]: ";
@@ -541,7 +541,7 @@ public:
         mappingTable[lpn].clear();
 	}
 
-	void write(char* data, unsigned int lpn , Algorithm algorithm , unsigned int* writing_sequence = nullptr, long long base_index = NA ) {
+	void write(char* data, unsigned int lpn , Algorithm algorithm , unsigned int* writing_sequence = nullptr,unsigned long long base_index = NA ) {
         if (freeList.empty()){
             if (algorithm == GREEDY){
                 GC();
