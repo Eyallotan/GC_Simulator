@@ -2,7 +2,7 @@
 
 This simulator enables to run various garbage collection (GC) algorithms on an SSD memory layout. we implement a fully customizable infastructure that allows you to run your algorithm of choice on many different memory settings and record statistics such as number of erases and write amplification.
 
-For full details about the theoretical model and the algorithms implemented in this simulator please read the [project report](Garbage Collection Algorithms for Flash Memories.pdf). In the report you will find all the needed prerequisites, along with a full breakdown of each algorithm, experiments results and more. 
+For full details about the theoretical model and the algorithms implemented in this simulator please read the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf). In the report you will find all the needed prerequisites, along with a full breakdown of each algorithm, experiments results and more. 
 
 ## Installation
 
@@ -34,7 +34,7 @@ These are the parameters you must set for each simulation:
 1. ```greedy```
 2. ```greedy_lookahead```
 3. ```writing_assingment``` (This algorithm is still a work in progress..)
-4. ```generational```. If you choose this option you will be prompt to choose the number of generations. In our initial [project report](Garbage Collection Algorithms for Flash Memories.pdf) we analyze the case for 2 generations. In any case, you should make sure that number of generations is always larger then T-U (this will also be enforced by the simulator).
+4. ```generational```. If you choose this option you will be prompt to choose the number of generations. In our initial [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf) we analyze the case for 2 generations. In any case, you should make sure that number of generations is always larger then T-U (this will also be enforced by the simulator).
 
 For example: 
 ```bash
@@ -93,7 +93,7 @@ Number of erases: 7053. Write Amplification: 2.25694
 ```
 
 ### Steady State 
-We use steady state assumption (as stated in the [project report](Garbage Collection Algorithms for Flash Memories.pdf)). Therefore the steady state flag is automatically turned on. if you wish to turn it off you can comment out the following line in ```main.cpp```.
+We use steady state assumption (as stated in the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf)). Therefore the steady state flag is automatically turned on. if you wish to turn it off you can comment out the following line in ```main.cpp```.
 ```cpp
 67.  /* if you wish to deactivate steady state mode remove comment */
 68.    //scg->setSteadyState(false);
@@ -111,7 +111,7 @@ We have implemented a print mode option that reflects block and page statistics 
 
 Pull requests are welcomed. 
 There are many future TODO's we hope to get to in the near (or far) future. 
-Some of our ideas are written in the [project report](Garbage Collection Algorithms for Flash Memories.pdf).
+Some of our ideas are written in the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf).
 
 ## License
 
