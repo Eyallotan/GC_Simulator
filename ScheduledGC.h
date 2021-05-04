@@ -31,8 +31,10 @@ public:
     unsigned int* writing_sequence;
 
     /* number of pages in writing sequence. This parameter can be adjusted to be a window of known writes, but
-     * this feature may require some more adjustments */
-    long long number_of_pages;
+     * this feature may require some more adjustments
+     * In the current implementation we use the global NUMBER_OF_PAGES macro, but this is bad practice for sure
+     * if we wish to scale up in any way.. in that case we should switch and use this member element */
+    unsigned long long number_of_pages;
 
     /* location list is a hash table that maps a logical page number to a ListItem that contains a list of indexes
      * in the writing sequence such that for page i and each index j in the location list matching that page i it
@@ -151,19 +153,19 @@ public:
     }
 
     /* get the number of unique logical pages in writing_sequence */
-    unsigned int getLocationListSize(long long base_index, unsigned int window_size) const{
+    unsigned int getLocationListSize(unsigned long long base_index, unsigned int window_size) const{
         set<int> logical_pages_in_window;
-        for (long long i = base_index; i < base_index + window_size && i < NUMBER_OF_PAGES ; ++i) {
+        for (unsigned long long i = base_index; i < base_index + window_size && i < NUMBER_OF_PAGES ; ++i) {
             logical_pages_in_window.insert(writing_sequence[i]); // will not add duplicates
         }
         return logical_pages_in_window.size();
     }
 
 
-    map<unsigned int,ListItem>* createLocationsMap(long long base_index, unsigned int window_size) const{
+    map<unsigned int,ListItem>* createLocationsMap(unsigned long long base_index, unsigned int window_size) const{
         unsigned int location_list_size = getLocationListSize(base_index,window_size);
         map<unsigned int,ListItem>* locations_list = new map<unsigned int,ListItem>[location_list_size];
-        for (long long i = base_index; i < base_index + window_size && i < NUMBER_OF_PAGES; ++i) {
+        for (unsigned long long i = base_index; i < base_index + window_size && i < NUMBER_OF_PAGES; ++i) {
             auto iterator = locations_list->find(writing_sequence[i]);
             if (iterator == locations_list->end()){
                 locations_list->insert({writing_sequence[i],ListItem(writing_sequence[i],i)});
@@ -179,7 +181,7 @@ public:
         if (reach_steady_state){
             reachSteadyState();
         }
-        for (long long i = 0; i < NUMBER_OF_PAGES; i++) {
+        for (unsigned long long i = 0; i < NUMBER_OF_PAGES; i++) {
             ftl->write(data,writing_sequence[i],algo, writing_sequence, i);
         }
     }
@@ -228,11 +230,11 @@ public:
         if (reach_steady_state){
             reachSteadyState();
         }
-        long long base_index = 0;
+        unsigned long long base_index = 0;
         unsigned int window_size = getWindowSize();
-        while (base_index < number_of_pages){
+        while (base_index < NUMBER_OF_PAGES){
             vector<pair<unsigned int,int>> writing_assignment = getWritingAssignment(base_index,window_size);
-            for (long long i = 0; i < writing_assignment.size() && i < NUMBER_OF_PAGES; i++) {
+            for (unsigned long long i = 0; i < writing_assignment.size() && i < NUMBER_OF_PAGES; i++) {
                 ftl->writeToBlock(data, writing_assignment[i].first, writing_assignment[i].second);
             }
             base_index += window_size;
@@ -257,15 +259,15 @@ public:
             reachSteadyState();
         }
         ftl->printMemeoryLayout();
-        long long base_index = 0;
+        unsigned long long base_index = 0;
         unsigned int window_size = getWindowSize();
-        while (base_index < number_of_pages){
+        while (base_index < NUMBER_OF_PAGES){
             cout<<"memory before window writes:"<<endl;
             ftl->printMemeoryLayout();
             cout<<"window size: "<<window_size<<endl;
             vector<pair<unsigned int,int>> writing_assignment = getWritingAssignment(base_index,window_size);
             printAssignment(writing_assignment);
-            for (long long i = 0; i < writing_assignment.size() && i < NUMBER_OF_PAGES; i++) {
+            for (unsigned long long i = 0; i < writing_assignment.size() && i < NUMBER_OF_PAGES; i++) {
                 ftl->writeToBlock(data, writing_assignment[i].first, writing_assignment[i].second);
             }
             cout<<"memory after window writes:"<<endl;
@@ -281,12 +283,12 @@ public:
         }
     }
 
-    vector<pair<unsigned int,int>> getWritingAssignment(long long base_index, unsigned int window_size){
+    vector<pair<unsigned int,int>> getWritingAssignment(unsigned long long base_index, unsigned int window_size){
 
         /* construct a result vector, containing pairs of (logical_page_to_write,physical_block_to_write_to) */
         vector<pair<unsigned int,int>> res(window_size);
         int j = 0;
-        for (long long i = base_index; i < base_index + window_size && i < NUMBER_OF_PAGES ; i++){
+        for (unsigned long long i = base_index; i < base_index + window_size && i < NUMBER_OF_PAGES ; i++){
             res[j].first = writing_sequence[i];
             res[j].second = TBD;
             j++;
@@ -320,7 +322,7 @@ public:
 
     }
 
-    vector<int> getBlockOrdering(long long base_index) const {
+    vector<int> getBlockOrdering(unsigned long long base_index) const {
         vector<int> block_list;
         vector<pair<int,double>> block_scores;
 
@@ -356,7 +358,7 @@ public:
         }
     }
 
-    void assignWritesToBlocks(map<unsigned int,ListItem>* locations_list, vector<pair<unsigned int,int>>* res, vector<int> blocks, long long base_index){
+    void assignWritesToBlocks(map<unsigned int,ListItem>* locations_list, vector<pair<unsigned int,int>>* res, vector<int> blocks, unsigned long long base_index){
 
         int i = 0;
         int writes_in_block = ftl->getValidWritesInBlock(blocks[i]);
@@ -365,11 +367,11 @@ public:
         /* assign all invalid pages. i.e pages that will be overwritten within this window */
         auto next_block_indexes = getNextBlockIndexes(locations_list,PAGES_PER_BLOCK-writes_in_block);
         while(!next_block_indexes.empty()){
-            for (int j = 0 ; j < next_block_indexes.size() ; j++){
+            for (unsigned int j = 0 ; j < next_block_indexes.size() ; j++){
                 /* NOTE: loc represents the absolute location in the writing_sequence, but we want to access
                  * res in the location relative to the base index
                  */
-                long long loc = locations_list->at(writing_sequence[next_block_indexes[j]]).getFirstLocationInList();
+                unsigned long long loc = locations_list->at(writing_sequence[next_block_indexes[j]]).getFirstLocationInList();
                 res->at(loc-base_index).second = blocks[i]; // we need the first location in the list!
             }
 
@@ -386,7 +388,7 @@ public:
          */
 
         vector<long long> indexes_to_sort;
-        for (int j = 0 ; j < res->size() ; j++) {
+        for (unsigned int j = 0 ; j < res->size() ; j++) {
             if (res->at(j).second != TBD) {
                 continue;
             } else {
@@ -394,7 +396,7 @@ public:
             }
         }
         sortIndexes(&indexes_to_sort);
-        for (int j = 0 ; j < indexes_to_sort.size(); j++){
+        for (unsigned int j = 0 ; j < indexes_to_sort.size(); j++){
             updateBlockNumAndWritesCount(&i,&writes_in_block,blocks);
             res->at(indexes_to_sort[j]).second = blocks[i];
             writes_in_block++;
@@ -429,7 +431,7 @@ public:
         });
     }
 
-    long long pageScore(long long page_index) const{
+    unsigned long long pageScore(unsigned long long page_index) const{
         unsigned int lpn = writing_sequence[page_index];
         return logical_pages_location_map->at(lpn).getFirstLocationAfterIndex(page_index);
     }
@@ -444,16 +446,16 @@ public:
             ftl->gen_blocks.insert({j, new_gen_block});
         }
 
-        for (long long i = 0; i < NUMBER_OF_PAGES; ++i) {
+        for (unsigned long long i = 0; i < NUMBER_OF_PAGES; ++i) {
             int generation = getGeneration(i, num_of_gens);
             ftl->writeGenerational(data, writing_sequence[i], generation, writing_sequence, i);
         }
     }
 
-    int getGeneration(long long page_index, int num_of_gens) const{
-        long long page_score = pageScore(page_index) - page_index;
+    int getGeneration(unsigned long long page_index, int num_of_gens) const{
+        unsigned long long page_score = pageScore(page_index) - page_index;
         int interval = (PAGES_PER_BLOCK*LOGICAL_BLOCK_NUMBER)/num_of_gens; //TODO: adjust this
-        long long bound = interval;
+        unsigned long long bound = interval;
         for (int i = 0; i < num_of_gens-1; ++i) {
             if(page_score < bound)
                 return i;

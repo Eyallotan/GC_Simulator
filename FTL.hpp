@@ -365,7 +365,7 @@ public:
 	 * pages in the block. for full description of the function logic, parameter adjustment
 	 * experiments and graph results - please see written report
 	 */
-	double getBlockScore(int block_num, long long base_index, unsigned int* writing_sequence) const{
+	double getBlockScore(int block_num, unsigned long long base_index, unsigned int* writing_sequence) const{
         assert(block_num >= 0);
 	    Block* curr_block = blocks[block_num];
         set<int> pages_in_block;
@@ -377,7 +377,7 @@ public:
 
         double block_score = 0;
         //TODO: should we scan until i < NUMBER_OF_PAGES or until i < base_index + PAGES_PER_BLOCK*LOGICAL_BLOCK_NUMBER ?
-        for (long long i = base_index ; i < base_index + PAGES_PER_BLOCK*PHYSICAL_BLOCK_NUMBER && i < NUMBER_OF_PAGES ; i++){
+        for (unsigned long long i = base_index ; i < base_index + PAGES_PER_BLOCK*PHYSICAL_BLOCK_NUMBER && i < NUMBER_OF_PAGES ; i++){
             if (pages_in_block.find(writing_sequence[i]) != pages_in_block.end()){
                 pages_in_block.erase(writing_sequence[i]);
                 if (pages_in_block.empty()){
@@ -578,7 +578,7 @@ public:
 		gen_blocks.at(generation) = block_to_assign;
 	}
 
-    void writeGenerational(char* data, unsigned int lpn, int generation, unsigned int* writing_sequence, long long base_index) {
+    void writeGenerational(char* data, unsigned int lpn, int generation, unsigned int* writing_sequence, unsigned long long base_index) {
         Block* gen_block = getGenerationalBlock(generation);
         if (!gen_block){
             if (freeList.empty()){

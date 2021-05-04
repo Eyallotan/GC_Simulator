@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     ScheduledGC* scg = new ScheduledGC(NUMBER_OF_PAGES,page_dist);
 
     /* if you wish to activate print mode remove comment */
-    scg->setPrintMode(true);
+    //scg->setPrintMode(true);
 
     /* run simulation and print results */
     scg->runSimulation(algo);

@@ -103,7 +103,7 @@ int getNumber(RandVariable indicator){
 
 unsigned int* generateUniformlyDistributedWriteSequence(){
     unsigned int* writing_sequence = new unsigned int[NUMBER_OF_PAGES];
-    for (long long i = 0; i < NUMBER_OF_PAGES; ++i) {
+    for (unsigned long long i = 0; i < NUMBER_OF_PAGES; ++i) {
         writing_sequence[i] = KISS() % (LOGICAL_BLOCK_NUMBER*PAGES_PER_BLOCK);
     }
     return writing_sequence;
@@ -126,7 +126,7 @@ unsigned int* generateHotColdWriteSequence(double hot_page_percentage, double p_
     /* this is a simple uniform distribution variable to represent a coin toss with probability p */
     setUniformDistributionGenerator(1,10,COIN_TOSS);
 
-    for (int i = 0; i < NUMBER_OF_PAGES; ++i) {
+    for (unsigned int i = 0; i < NUMBER_OF_PAGES; ++i) {
         int coin_toss = getNumber(COIN_TOSS);
         if (coin_toss <= p_hot*10){
             writing_sequence[i] = getNumber(HOT);

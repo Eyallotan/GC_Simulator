@@ -27,9 +27,9 @@ public:
     unsigned int page_number;
 
     /* locations (indexes) in the writing sequence where the logical page number 'page_number' appears */
-    vector<long long> location_list;
+    vector<unsigned long long> location_list;
 
-    ListItem(unsigned int page_number, long long location) : page_number(page_number), location_list(vector<long long>({location})) {}
+    ListItem(unsigned int page_number, unsigned long long location) : page_number(page_number), location_list(vector<unsigned long long>({location})) {}
 
     /* add a location (index) to the ListItem */
     void addLocation(long long location) {
@@ -52,16 +52,16 @@ public:
     }
 
     /* get the first location of the page*/
-    long long getFirstLocationInList(){
+    unsigned long long getFirstLocationInList(){
         return location_list.front();
     }
 
     /* get the last location of the page */
-    long long getLastLocationInList(){
+    unsigned long long getLastLocationInList(){
         return location_list.back();
     }
 
-    long long getFirstLocationAfterIndex(long long page_index){
+    unsigned long long getFirstLocationAfterIndex(unsigned long long page_index){
         for (auto i : location_list){
             if (i > page_index){
                 return i;
@@ -70,7 +70,7 @@ public:
         return NUMBER_OF_PAGES;
     }
 
-    vector<long long> getLocationList() const {
+    vector<unsigned long long> getLocationList() const {
         return location_list;
     }
 
