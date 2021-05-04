@@ -23,7 +23,8 @@ int main(int argc, char** argv) {
 	}
 
 	if (argc == 9) {
-		freopen(argv[8], "a", stdout);
+		output_file = argv[8];
+		freopen(output_file, "a", stdout);
 	}
 
 	PHYSICAL_BLOCK_NUMBER = atoi(argv[1]);
@@ -64,12 +65,16 @@ int main(int argc, char** argv) {
     /* if you wish to activate print mode remove comment */
     //scg->setPrintMode(true);
 
+    /* if you wish to deactivate steady state mode remove comment */
+    //scg->setSteadyState(false);
+
     /* run simulation and print results */
     scg->runSimulation(algo);
     scg->printSimulationResults();
 
     /* cleanup */
     delete scg;
+    output_file = nullptr;
 	if (argc == 9){
 		fclose(stdout);
 	}

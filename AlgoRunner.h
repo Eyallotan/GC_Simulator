@@ -13,6 +13,7 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <unistd.h>
 
 #define TBD -11
 
@@ -75,10 +76,15 @@ public:
         }
         else {
             double hot_pages_percentage, p;
+            if(output_file){
+                dup2(fd_stdout, 1);
+            }
             cout<<"Please enter parameters for Hot/Cold memory simulation."<<endl<<"Enter the hot page percentage out of all logical pages in memory (0-100): "<<endl;
             cin >> hot_pages_percentage;
             cout<<"Enter the probability for hot pages (0-1): "<<endl;
             cin >> p;
+            if(output_file)
+                freopen(output_file, "a", stdout);
             writing_sequence = generateHotColdWriteSequence(hot_pages_percentage,p);
         }
 
@@ -142,6 +148,7 @@ public:
         if (print_mode){
             ftl->printHeader();
         }
+        /* you can adjust this */
         for (int i = 0; i < 1000000; i++) {
             logical_page_to_write = KISS() % (LOGICAL_BLOCK_NUMBER * PAGES_PER_BLOCK);
             ftl->write(data,logical_page_to_write,GREEDY);
@@ -199,8 +206,13 @@ public:
             case GENERATIONAL:
                 cout<<"Starting Generational Algorithm simulation..."<<endl;
                 int number_of_generations;
+                if(output_file){
+                    dup2(fd_stdout, 1);
+                }
                 cout<<"Enter number of generations for Generational GC:"<<endl;
                 cin >> number_of_generations;
+                if(output_file)
+                    freopen(output_file, "a", stdout);
                 if (number_of_generations > PHYSICAL_BLOCK_NUMBER - LOGICAL_BLOCK_NUMBER){
                     cerr << "Error! number of generations must be at least T-U. crashing.." <<endl;
                     exit(1);
