@@ -100,7 +100,7 @@ We have implemented a print mode option that reflects block and page statistics 
 64.  /* if you wish to activate print mode remove comment */
 65.    //scg->setPrintMode(true);
 ``` 
-Now when we run the simulator we'll get the relevant statistics. 
+Now when we run the simulator we'll get the relevant statistics.  
 For exmaple (here we print to terminal just for the example. You should redirect to output file):
 ```bash
 $ ./Simulator 12 7 4 4096 100000 uniform greedy
