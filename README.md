@@ -109,8 +109,25 @@ We have implemented a print mode option that reflects block and page statistics 
 ### Debug Mode
 For your convenience, we implemented a simple memory layout printer. This can be used to print the memory layout as the simulator runs. 
 Important: This feature is designed to work on small memory layouts. Make sure that U*Z < 100 in order to get a good looking result.
-We may consider making these feature a bit more robust if needed in the future, but we think that for debugging purposes this works fine for now.
-
+We may consider making this feature a bit more robust in the future, but we think that for debugging purposes this works fine for now.
+To use this feature simply plant the function ```printMemeoryLayout()``` implemented in [```FTL.hpp```](FTL.hpp).
+This may look something like this:
+```cpp
+  void runGreedySimulation(Algorithm algo) {
+        if (reach_steady_state){
+            reachSteadyState();
+        }
+        for (unsigned long long i = 0; i < NUMBER_OF_PAGES; i++) {
+        /* DEBUG mode - print memory layout */
+            ftl->printMemeoryLayout();
+            ftl->write(data,writing_sequence[i],algo, writing_sequence, i);
+        }
+    }
+```
+Now when we run the simulation we will see the full memory layout, with logical block numbers for valid pages and X's for invalid pages:
+```bash
+  show simulation
+```
 
 ## Contributing
 
