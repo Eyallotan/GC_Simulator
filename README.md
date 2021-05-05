@@ -116,7 +116,7 @@ Page Distribution:      uniform
 GC Algorithm:           greedy
 Starting Greedy Algorithm simulation...
 Reaching Steady State...
-Erases          Logical Writes  Y1      V[0]    V[1]    V[2]    V[3]    V[4]
+Erases          Logical Writes  Y      V[0]    V[1]    V[2]    V[3]    V[4]
 1               48              0       2       4       2       2       2
 2               52              0       2       4       1       4       1
 3               56              0       2       3       3       2       2
@@ -161,7 +161,7 @@ You can also adjust the number of writes done in order to achieve steady state (
 For your convenience, we implemented a simple memory layout printer. This can be used to print the memory layout as the simulator runs. 
 Important: This feature is designed to work on small memory layouts. Make sure that U*Z < 100 in order to get a good looking result.
 We may consider making this feature a bit more robust in the future, but we think that for debugging purposes this works fine for now.
-To use this feature simply plant the function ```printMemeoryLayout()``` implemented in [```FTL.hpp```](FTL.hpp).
+To use this feature simply plant the function ```printMemoryLayout()``` implemented in [```FTL.hpp```](FTL.hpp).
 This may look something like this:
 ```cpp
   void runGreedySimulation(Algorithm algo) {
@@ -170,7 +170,7 @@ This may look something like this:
         }
         for (unsigned long long i = 0; i < NUMBER_OF_PAGES; i++) {
         /* DEBUG mode - print memory layout */
-            ftl->printMemeoryLayout();
+            ftl->printMemoryLayout();
             ftl->write(data,writing_sequence[i],algo, writing_sequence, i);
         }
     }
