@@ -34,7 +34,7 @@ These are the parameters you must set for each simulation:
 1. ```greedy```
 2. ```greedy_lookahead```
 3. ```writing_assingment``` (This algorithm is still a work in progress..)
-4. ```generational```. If you choose this option you will be prompt to choose the number of generations. In our initial [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf) we analyze the case for 2 generations. In any case, you should make sure that number of generations is always larger then T-U (this will also be enforced by the simulator).
+4. ```generational```. If you choose this option you will be prompt to choose the number of generations. In our initial [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf) we analyze the case for 2 generations. In any case, you should make sure that the number of generations is always larger then T-U (this will also be enforced by the simulator).
 
 For example: 
 ```bash
@@ -98,7 +98,7 @@ We use steady state assumption (as stated in the [project report](https://github
 67.  /* if you wish to deactivate steady state mode remove comment */
 68.    //scg->setSteadyState(false);
 ``` 
-You can also adjust the number of writes to use to achieve steady state (this can be better integrated in the future to be part of the adjustable parameters..). 
+You can also adjust the number of writes done in order to achieve steady state (this can be better integrated in the future to be part of the adjustable parameters..). 
 
 ### Print Mode
 We have implemented a print mode option that reflects block and page statistics as the simulator runs, along with information about the number of logical writes and more useful information. The print mode option is turned off by default and should not be used unless you redirect your output to a file (otherwise print time will probably make the simulation run for a very long time). if you wish to turn on the print mode you can comment out the following line in [```main.cpp```](main.cpp):
@@ -106,6 +106,11 @@ We have implemented a print mode option that reflects block and page statistics 
 64.  /* if you wish to activate print mode remove comment */
 65.    //scg->setPrintMode(true);
 ``` 
+### Debug Mode
+For your convenience, we implemented a simple memory layout printer. This can be used to print the memory layout as the simulator runs. 
+Important: This feature is designed to work on small memory layouts. Make sure that U*Z < 100 in order to get a good looking result.
+We may consider making these feature a bit more robust if needed in the future, but we think that for debugging purposes this works fine for now.
+
 
 ## Contributing
 
