@@ -269,7 +269,7 @@ public:
 	}
 
 	void printHeader() {
-		cout << "Erases\t\tLogical Writes\tY1\t";
+		cout << "Erases\t\tLogical Writes\tY\t";
 		for (int i = 0; i < PAGES_PER_BLOCK + 1; i++) {
 			cout << "V[" << i << "]\t";
 		}
@@ -681,7 +681,7 @@ public:
     }
 
     /* this should used for debugging purposes only. use with small block numbers */
-    void printMemeoryLayout() const{
+    void printMemoryLayout() const{
         cout<<"       ";
         for (int i = 0; i < PHYSICAL_BLOCK_NUMBER; ++i) {
             cout<<i<<"    "; // block number
