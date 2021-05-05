@@ -95,7 +95,7 @@ Number of erases: 7053. Write Amplification: 2.25694
 ```
 
 ### Steady State 
-We use steady state assumption (as stated in the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf)). Therefore the steady state flag is automatically turned on. if you wish to turn it off you can comment out the following line in [```main.cpp```](main.cpp):
+We use steady state assumption (as expalined in the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf)). Therefore the steady state flag is automatically turned on. if you wish to turn it off you can comment out the following line in [```main.cpp```](main.cpp):
 ```cpp
 67.  /* if you wish to deactivate steady state mode remove comment */
 68.    //scg->setSteadyState(false);
