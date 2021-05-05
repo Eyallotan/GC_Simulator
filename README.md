@@ -94,14 +94,6 @@ Simulation Results:
 Number of erases: 7053. Write Amplification: 2.25694
 ```
 
-### Steady State 
-We use steady state assumption (as expalined in the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf)). Therefore the steady state flag is automatically turned on. if you wish to turn it off you can comment out the following line in [```main.cpp```](main.cpp):
-```cpp
-67.  /* if you wish to deactivate steady state mode remove comment */
-68.    //scg->setSteadyState(false);
-``` 
-You can also adjust the number of writes done in order to achieve steady state (this can be better integrated in the future to be part of the adjustable parameters..). 
-
 ### Print Mode
 We have implemented a print mode option that reflects block and page statistics as the simulator runs, along with information about the number of logical writes and more useful information. The print mode option is turned off by default and should not be used unless you redirect your output to a file (otherwise print time will probably make the simulation run for a very long time). if you wish to turn on the print mode you can comment out the following line in [```main.cpp```](main.cpp):
 ```cpp
@@ -156,6 +148,14 @@ Erases          Logical Writes  Y1      V[0]    V[1]    V[2]    V[3]    V[4]
 29              147             1       0       3       4       3       2^C
 
 ```
+
+### Steady State 
+We use steady state assumption (as expalined in the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf)). Therefore the steady state flag is automatically turned on. if you wish to turn it off you can comment out the following line in [```main.cpp```](main.cpp):
+```cpp
+67.  /* if you wish to deactivate steady state mode remove comment */
+68.    //scg->setSteadyState(false);
+``` 
+You can also adjust the number of writes done in order to achieve steady state (this can be better integrated in the future to be part of the adjustable parameters..). 
 
 ### Debug Mode
 For your convenience, we implemented a simple memory layout printer. This can be used to print the memory layout as the simulator runs. 
