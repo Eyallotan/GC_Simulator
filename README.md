@@ -106,6 +106,54 @@ We have implemented a print mode option that reflects block and page statistics 
 64.  /* if you wish to activate print mode remove comment */
 65.    //scg->setPrintMode(true);
 ``` 
+Now when we run the simulator we'll get the relevant statistics. For exmaple (here we print to terminal just for the example. You should redirect to output file):
+```bash
+$ ./Simulator 12 7 4 4096 100000 uniform greedy
+Starting GC Simulator!
+Physical Blocks:        12
+Logical Blocks:         7
+Pages/Block:            4
+Page Size:              4096
+Alpha:                  0.583333
+Over Provisioning:      0.714286
+Number of Pages:        100000
+Page Distribution:      uniform
+GC Algorithm:           greedy
+Starting Greedy Algorithm simulation...
+Reaching Steady State...
+Erases          Logical Writes  Y1      V[0]    V[1]    V[2]    V[3]    V[4]
+1               48              0       2       4       2       2       2
+2               52              0       2       4       1       4       1
+3               56              0       2       3       3       2       2
+4               60              0       1       6       0       3       2
+5               64              0       1       5       1       3       2
+6               68              0       1       5       0       4       2
+7               72              1       0       5       1       4       2
+8               75              1       0       4       2       5       1
+9               78              0       1       3       2       4       2
+10              82              1       0       4       3       3       2
+11              85              0       2       1       3       4       2
+12              89              0       1       2       3       5       1
+13              93              0       1       1       4       6       0
+14              97              1       0       5       0       6       1
+15              100             1       0       4       3       3       2
+16              103             0       1       2       3       5       1
+17              107             0       2       1       3       4       2
+18              111             0       1       1       3       7       0
+19              115             1       0       2       4       6       0
+20              118             1       0       2       5       4       1
+21              121             1       0       3       3       5       1
+22              124             1       0       4       2       4       2
+23              127             1       0       4       1       6       1
+24              130             1       0       4       2       4       2
+25              133             1       0       4       2       4       2
+26              136             1       0       5       0       5       2
+27              139             0       1       3       2       3       3
+28              143             0       1       3       2       3       3
+29              147             1       0       3       4       3       2^C
+
+```
+
 ### Debug Mode
 For your convenience, we implemented a simple memory layout printer. This can be used to print the memory layout as the simulator runs. 
 Important: This feature is designed to work on small memory layouts. Make sure that U*Z < 100 in order to get a good looking result.
