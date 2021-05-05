@@ -270,12 +270,12 @@ public:
         if (reach_steady_state){
             reachSteadyState();
         }
-        ftl->printMemeoryLayout();
+        ftl->printMemoryLayout();
         unsigned long long base_index = 0;
         unsigned int window_size = getWindowSize();
         while (base_index < NUMBER_OF_PAGES){
             cout<<"memory before window writes:"<<endl;
-            ftl->printMemeoryLayout();
+            ftl->printMemoryLayout();
             cout<<"window size: "<<window_size<<endl;
             vector<pair<unsigned int,int>> writing_assignment = getWritingAssignment(base_index,window_size);
             printAssignment(writing_assignment);
@@ -283,7 +283,7 @@ public:
                 ftl->writeToBlock(data, writing_assignment[i].first, writing_assignment[i].second);
             }
             cout<<"memory after window writes:"<<endl;
-            ftl->printMemeoryLayout();
+            ftl->printMemoryLayout();
             base_index += window_size;
             window_size = getWindowSize();
         }
