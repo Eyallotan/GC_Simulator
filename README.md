@@ -240,7 +240,7 @@ Steady State Reached...
 
 Pull requests are welcomed. 
 There are many TODO's we hope to get to in the near (or far) future. 
-Some of our ideas are written in the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf).
+Many of our ideas are written in the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf) (marken in red).
 
 ## License
 
