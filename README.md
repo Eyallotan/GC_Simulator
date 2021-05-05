@@ -1,3 +1,5 @@
+![alt text](https://st3.depositphotos.com/1005049/31711/v/600/depositphotos_317110512-stock-illustration-garbage-man-at-work-lorry.jpg)
+
 # Flash GC Simulator
 
 This simulator enables to run various garbage collection (GC) algorithms on an SSD memory layout. we implement a fully customizable infastructure that allows you to run your algorithm of choice on many different memory settings and record statistics such as number of erases and write amplification.
