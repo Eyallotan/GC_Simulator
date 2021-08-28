@@ -111,8 +111,6 @@ public:
 
 	int nextFree;
 
-	/* pointer to the physical memory */
-
 	Block() :
             blockNo(NA), pages(new PhysicalPage[PAGES_PER_BLOCK]), valid(0), nextFree(
 					0) {
@@ -242,6 +240,13 @@ public:
 	 */
 	bool print_mode;
 
+    /* optimized parameters for the given OP that we are currently running with.
+     * This is a pair (n,Y) where:
+     * n - the denominator's power in the block score function
+     * Y - the max range for Y when searching for blocks to erase
+     * */
+    std::pair<int,int> optimized_params;
+
 	explicit FTL() :
             mappingTable(
 					new LogicalPage[LOGICAL_BLOCK_NUMBER * PAGES_PER_BLOCK]), blocks(
@@ -257,7 +262,8 @@ public:
 				blocks[i]->pages[j].blockNo = i;
 			}
 		}
-	}
+        optimized_params = getOptimizedParams();
+    }
 
 	~FTL() {
 		delete[] mappingTable;
@@ -289,7 +295,7 @@ public:
 	    return counter;
 	}
 
-	/* calculate window size auxilary for writing assingment algorithm.
+	/* calculate window size auxiliary for writing assignment algorithm.
 	 * full window size calculation is provided in the written report.
 	 */
 	unsigned int windowSizeAux(){
@@ -391,7 +397,27 @@ public:
         return block_score;
 	}
 
-	Block* getBestBlockToEvict(unsigned int* writing_sequence, long long base_index) const {
+    #define X(lower_bound, upper_bound, i_val, y_val) \
+        if (OP > lower_bound && OP <= upper_bound){     \
+            return std::pair<int,int>{i_val,y_val};     \
+        }
+
+        /**
+         * Get the optimized parameters for running the different algorithms on the memory
+         * configuration based on the over-provisioning factor.
+         * These parameters were found by running empiric experiments.
+         * */
+        std::pair<int,int> getOptimizedParams()
+        {
+            float OP = (float)(PHYSICAL_BLOCK_NUMBER-LOGICAL_BLOCK_NUMBER)/LOGICAL_BLOCK_NUMBER;
+            ALGO_PARAMS_TABLE
+            return std::pair<int,int>{}; // shouldn't get here
+        }
+
+    #undef X
+
+
+    Block* getBestBlockToEvict(unsigned int* writing_sequence, long long base_index) const {
 
         vector<pair<int, double>> block_scores;
 
