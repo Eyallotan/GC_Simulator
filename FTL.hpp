@@ -392,14 +392,14 @@ public:
             }
             // TODO: adjust the block score function.
             long long div_value = i - base_index;
-            block_score += div_value > 0 ? (pages_in_block.size()/(double)pow(div_value,0)) : pages_in_block.size();
+            block_score += div_value > 0 ? (pages_in_block.size()/(double)pow(div_value,optimized_params.first)) : pages_in_block.size();
         }
         return block_score;
 	}
 
-    #define X(lower_bound, upper_bound, i_val, y_val) \
+    #define X(lower_bound, upper_bound, i_val, num_of_gens, y_val) \
         if (OP > lower_bound && OP <= upper_bound){     \
-            return std::pair<int,int>{i_val,y_val};     \
+            return std::pair<int,int>{i_val,num_of_gens};     \
         }
 
         /**
@@ -576,7 +576,6 @@ public:
                 GCWithLookAhead(writing_sequence,base_index);
             }
         }
-
         Block *current = freeList.front();
 
         if (mappingTable[lpn].status != FREE_LOGICAL) {

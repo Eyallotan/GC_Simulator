@@ -184,16 +184,39 @@ public:
         return locations_list;
     }
 
-    void runGreedySimulation(Algorithm algo) {
+    void runGreedySimulation(Algorithm algo, long long window_size = 0) {
         if (reach_steady_state){
             reachSteadyState();
         }
-        for (unsigned long long i = 0; i < NUMBER_OF_PAGES; i++) {
-            ftl->write(data,writing_sequence[i],algo, writing_sequence, i);
+        if(algo == GREEDY){
+            for (unsigned long long i = 0; i < NUMBER_OF_PAGES; i++) {
+                ftl->write(data,writing_sequence[i],GREEDY, writing_sequence, i);
+            }
+        }
+        else if(algo == GREEDY_LOOKAHEAD){
+            for (unsigned long long i = 0; i < window_size; i++) {
+                ftl->write(data,writing_sequence[i],GREEDY_LOOKAHEAD, writing_sequence, i);
+            }
+            for (unsigned long long i = window_size; i < NUMBER_OF_PAGES; i++) {
+                ftl->write(data,writing_sequence[i],GREEDY, writing_sequence, i);
+            }
         }
     }
 
     void runSimulation(Algorithm algorithm){
+        long long window_size = 0;
+        if(algorithm != GREEDY){
+            cout<<"Enter Window Size..."<<endl;
+            cin >> window_size;
+            if(window_size < 0){
+                cerr<<"Error! Window size is a negative number. crashing.."<<endl;
+                exit(1);
+            }
+            if(window_size > NUMBER_OF_PAGES){
+                cerr<<"Error! Window size is bigger than Number Of Pages. crashing.."<<endl;
+                exit(1);
+            }
+        }
         switch (algorithm) {
             case GREEDY:
                 cout<<"Starting Greedy Algorithm simulation..."<<endl;
@@ -201,7 +224,7 @@ public:
                 break;
             case GREEDY_LOOKAHEAD:
                 cout<<"Starting Greedy LookAhead Algorithm simulation..."<<endl;
-                runGreedySimulation(GREEDY_LOOKAHEAD);
+                runGreedySimulation(GREEDY_LOOKAHEAD, window_size);
                 break;
             case GENERATIONAL:
                 cout<<"Starting Generational Algorithm simulation..."<<endl;
@@ -217,7 +240,9 @@ public:
                     cerr << "Error! number of generations must be at least T-U. crashing.." <<endl;
                     exit(1);
                 }
-                runGenerationalSimulation(number_of_generations);
+                if(number_of_generations == 0)
+                    number_of_generations = this->ftl->optimized_params.second;
+                runGenerationalSimulation(number_of_generations, window_size);
                 break;
             case WRITING_ASSIGNMENT:
                 cout<<"Starting Writing Assignment Algorithm simulation..."<<endl;
@@ -448,7 +473,7 @@ public:
         return logical_pages_location_map->at(lpn).getFirstLocationAfterIndex(page_index);
     }
 
-    void runGenerationalSimulation(int num_of_gens) {
+    void runGenerationalSimulation(int num_of_gens, long long window_size) {
         if (reach_steady_state){
             reachSteadyState();
         }
@@ -458,9 +483,12 @@ public:
             ftl->gen_blocks.insert({j, new_gen_block});
         }
 
-        for (unsigned long long i = 0; i < NUMBER_OF_PAGES; ++i) {
+        for (unsigned long long i = 0; i < window_size; ++i) {
             int generation = getGeneration(i, num_of_gens);
             ftl->writeGenerational(data, writing_sequence[i], generation, writing_sequence, i);
+        }
+        for (unsigned long long i = window_size; i < NUMBER_OF_PAGES; i++) {
+            ftl->write(data,writing_sequence[i],GREEDY, writing_sequence, i);
         }
     }
 
