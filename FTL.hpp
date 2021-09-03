@@ -200,7 +200,7 @@ public:
 
 	/* List of pointers to free pages */
 
-	list<Block*> freeList;
+	std::list<Block*> freeList;
 
 	/* V is an array of sets of integers of histogram_size PAGES_PER_BLOCK+1. each
 	 * integer refers to a block number.

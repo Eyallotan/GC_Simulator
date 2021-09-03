@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
 	seed();
 
 	/* generate scheduledGC object */
-    AlgoRunner* scg = new AlgoRunner(NUMBER_OF_PAGES, page_dist);
+    AlgoRunner* scg = new AlgoRunner(NUMBER_OF_PAGES, page_dist, algo);
 
     /* if you wish to activate print mode remove comment */
     //scg->setPrintMode(true);
