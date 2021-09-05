@@ -243,6 +243,7 @@ public:
     /* optimized parameters for the given OP that we are currently running with.
      * This is a pair (n,Y) where:
      * n - the denominator's power in the block score function
+     * num_of_gens - best number of generations for generational algorithm
      * Y - the max range for Y when searching for blocks to erase
      * */
     std::pair<int,int> optimized_params;

@@ -27,7 +27,6 @@ public:
     /* parameters for Hot/Cold memory simulation */
     int hot_pages_percentage;
     double hot_pages_probability;
-    UserParameters() : window_size(NUMBER_OF_PAGES), num_of_gen(0), hot_pages_percentage(0), hot_pages_probability(0){};
 };
 
 class AlgoRunner{
@@ -58,6 +57,11 @@ public:
     /* writing page_dist represents the data distribution type - uniform distribution or Hot/Cold distribution */
     PageDistribution page_dist;
 
+    /* class which contains:
+     * HOT_COLD parameters (hot pages percentage and probability)
+     * window size
+     * num of generations for generational algorithm
+     */
     UserParameters user_parameters;
 
     /* FTL memory layout object */
@@ -83,44 +87,22 @@ public:
      */
     AlgoRunner(long long number_of_pages, PageDistribution page_dist, Algorithm algo) : number_of_pages(number_of_pages), page_dist(page_dist),
                                                                         algo(algo), ftl(nullptr), data(nullptr), reach_steady_state(true), print_mode(false){
-
-        /* generate a writing sequecne according to the desired writing page_dist */
-        if (page_dist == UNIFORM){
-            writing_sequence = generateUniformlyDistributedWriteSequence();
-        }
-        else {
-            //double hot_pages_percentage, p;
-            if(output_file){
-                dup2(fd_stdout, 1);
-            }
-            cout<<"Please enter parameters for Hot/Cold memory simulation."<<endl<<"Enter the hot page percentage out of all logical pages in memory (0-100): "<<endl;
-            cin >> user_parameters.hot_pages_percentage;
-            if(user_parameters.hot_pages_percentage < 0 or user_parameters.hot_pages_percentage > 100){
-                cerr<<"Error! Hot pages percentage must be in 0-100 range. crashing.."<<endl;
-                exit(1);
-            }
-            cout<<"Enter the probability for hot pages (0-1): "<<endl;
-            cin >> user_parameters.hot_pages_probability;
-            if(user_parameters.hot_pages_probability < 0 or user_parameters.hot_pages_probability > 1){
-                cerr<<"Error! Hot pages probability must be in 0-1 range. crashing.."<<endl;
-                exit(1);
-            }
-            if(output_file)
-                freopen(output_file, "a", stdout);
-            writing_sequence = generateHotColdWriteSequence(user_parameters.hot_pages_percentage, user_parameters.hot_pages_probability);
-        }
+        /* generates writing sequence for uniform or hot-cold distribution */
+        generateWritingSequence();
 
         /* construct a mapping between a logical page number to a ListItem corresponding the logical page.
         * each ListItem for logical page i contains the list of locations in the writing sequence where
         * the page i is written. each ListItem contains a list of locations sorted in an ascending order.
         */
+
         logical_pages_location_map = createLocationsMap(0,NUMBER_OF_PAGES);
         initializeFTL();
 
-        if(algo != GREEDY)
-            getWindowSizeFromUser();
-        if(algo == GENERATIONAL)
-            getNumOfGenerationsFromUser();
+        /* get user parameters:
+         * window size
+         * num of generations for generational algorithm
+        */
+        getUserParams();
     }
 
     ~AlgoRunner() {
@@ -195,6 +177,39 @@ public:
         return logical_pages_in_window.size();
     }
 
+    void generateWritingSequence(){
+        /* generate a writing sequecne according to the desired writing page_dist */
+        if (page_dist == UNIFORM){
+            writing_sequence = generateUniformlyDistributedWriteSequence();
+        }
+        else {
+            if(output_file){
+                dup2(fd_stdout, 1);
+            }
+            cout<<"Please enter parameters for Hot/Cold memory simulation."<<endl<<"Enter the hot page percentage out of all logical pages in memory (0-100): "<<endl;
+            cin >> user_parameters.hot_pages_percentage;
+            if(user_parameters.hot_pages_percentage < 0 or user_parameters.hot_pages_percentage > 100){
+                cerr<<"Error! Hot pages percentage must be in 0-100 range. crashing.."<<endl;
+                exit(1);
+            }
+            cout<<"Enter the probability for hot pages (0-1): "<<endl;
+            cin >> user_parameters.hot_pages_probability;
+            if(user_parameters.hot_pages_probability < 0 or user_parameters.hot_pages_probability > 1){
+                cerr<<"Error! Hot pages probability must be in 0-1 range. crashing.."<<endl;
+                exit(1);
+            }
+            if(output_file)
+                freopen(output_file, "a", stdout);
+            writing_sequence = generateHotColdWriteSequence(user_parameters.hot_pages_percentage, user_parameters.hot_pages_probability);
+        }
+    }
+
+    void getUserParams(){
+        if(algo != GREEDY)
+            getWindowSizeFromUser();
+        if(algo == GENERATIONAL)
+            getNumOfGenerationsFromUser();
+    }
 
     map<unsigned int,ListItem>* createLocationsMap(unsigned long long base_index, unsigned int window_size) const{
         unsigned int location_list_size = getLocationListSize(base_index,window_size);
@@ -216,8 +231,10 @@ public:
             reachSteadyState();
         }
         for (unsigned long long i = 0; i < window_size; i++) {
-            ftl->write(data,writing_sequence[i],GREEDY_LOOKAHEAD, writing_sequence, i);
+            ftl->write(data,writing_sequence[i], algo, writing_sequence, i);
         }
+        /* After running LOOK_AHEAD/GENERTIONAL algorithm, now we shoulde run
+         * GREEDY for the rest of writing sequence array */
         for (unsigned long long i = window_size; i < NUMBER_OF_PAGES; i++) {
             ftl->write(data,writing_sequence[i],GREEDY, writing_sequence, i);
         }
@@ -231,11 +248,11 @@ public:
                 break;
             case GREEDY_LOOKAHEAD:
                 cout<<"Starting Greedy LookAhead Algorithm simulation..."<<endl;
-                runGreedySimulation(GREEDY_LOOKAHEAD, this->user_parameters.window_size);
+                runGreedySimulation(GREEDY_LOOKAHEAD, user_parameters.window_size);
                 break;
             case GENERATIONAL:
                 cout<<"Starting Generational Algorithm simulation..."<<endl;
-                runGenerationalSimulation(this->user_parameters.num_of_gen, this->user_parameters.window_size);
+                runGenerationalSimulation(user_parameters.num_of_gen, user_parameters.window_size);
                 break;
             case WRITING_ASSIGNMENT:
                 cout<<"Starting Writing Assignment Algorithm simulation..."<<endl;
@@ -288,7 +305,7 @@ public:
             exit(1);
         }
         if(use_window_size == 'y'){
-            cout<<"Enter Window Size..."<<endl;
+            cout<<"Enter Window Size:"<<endl;
             cin >> user_parameters.window_size;
             if(user_parameters.window_size < 0){
                 cerr<<"Error! Window size is a negative number. crashing.."<<endl;
@@ -298,6 +315,9 @@ public:
                 cerr<<"Error! Window size is bigger than Number Of Pages. crashing.."<<endl;
                 exit(1);
             }
+        }
+        else{
+            user_parameters.window_size = NUMBER_OF_PAGES;
         }
     }
 
@@ -313,10 +333,6 @@ public:
             cerr << "Error! number of generations must be at least T-U. crashing.." <<endl;
             exit(1);
         }
-        if (user_parameters.num_of_gen == 1){
-            cerr << "Error! genarations number must be bigger than 1. crashing.." <<endl;
-            exit(1);
-        }
         if (user_parameters.num_of_gen < 0){
             cerr<<"Error! Window size is a negative number. crashing.."<<endl;
             exit(1);
@@ -325,9 +341,6 @@ public:
             user_parameters.num_of_gen = ftl->optimized_params.second;
     }
 
-    void getHotColdParametersFromUser(){
-
-    }
 
     /* this is the writing assignment algorithm with printing operations
      * that print out memory layout, writing assignments on the fly and window sizes. this
@@ -530,11 +543,13 @@ public:
             int generation = getGeneration(i, num_of_gens);
             ftl->writeGenerational(data, writing_sequence[i], generation, writing_sequence, i);
         }
-//        for(std::list<Block*>::iterator it = ftl->freeList.begin(); it != ftl->freeList.end(); it++);
+        for(std::map<int,Block*>::iterator it = ftl->gen_blocks.begin(); it!=ftl->gen_blocks.end(); it++){
+            if(it->second and it->second->valid != 0)
+                ftl->freeList.push_back(it->second);
+        }
+        ftl->gen_blocks.clear();
         for (unsigned long long i = window_size; i < NUMBER_OF_PAGES; i++) {
             ftl->write(data,writing_sequence[i],GREEDY, writing_sequence, i);
-//            for(std::list<Block*>::iterator it = ftl->freeList.begin(); it != ftl->freeList.end(); it++)
-//                cout<<"Y"<<endl;
         }
     }
 
