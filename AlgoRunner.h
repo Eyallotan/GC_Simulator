@@ -22,8 +22,8 @@ using std::vector;
 
 class UserParameters{
 public:
-    long long window_size;
-    int num_of_gen;
+    unsigned long long window_size;
+    int number_of_generations;
     /* parameters for Hot/Cold memory simulation */
     int hot_pages_percentage;
     double hot_pages_probability;
@@ -85,8 +85,9 @@ public:
      * you should note that some changes may be needed to use only the parameters passed to the class
      * c'tor (and this is better coding practice).
      */
-    AlgoRunner(long long number_of_pages, PageDistribution page_dist, Algorithm algo) : number_of_pages(number_of_pages), page_dist(page_dist),
-                                                                        algo(algo), ftl(nullptr), data(nullptr), reach_steady_state(true), print_mode(false){
+    AlgoRunner(long long number_of_pages, PageDistribution page_dist, Algorithm algo) :
+                                                                        algo(algo), number_of_pages(number_of_pages), page_dist(page_dist), ftl(nullptr),
+                                                                        data(nullptr), reach_steady_state(true), print_mode(false){
         /* generates writing sequence for uniform or hot-cold distribution */
         generateWritingSequence();
 
@@ -98,7 +99,7 @@ public:
         logical_pages_location_map = createLocationsMap(0,NUMBER_OF_PAGES);
         initializeFTL();
 
-        /* get user parameters:
+        /* get extra parameters:
          * window size
          * num of generations for generational algorithm
         */
@@ -178,7 +179,7 @@ public:
     }
 
     void generateWritingSequence(){
-        /* generate a writing sequecne according to the desired writing page_dist */
+        /* generate a writing sequence according to the desired writing page_dist */
         if (page_dist == UNIFORM){
             writing_sequence = generateUniformlyDistributedWriteSequence();
         }
@@ -189,14 +190,14 @@ public:
             cout<<"Please enter parameters for Hot/Cold memory simulation."<<endl<<"Enter the hot page percentage out of all logical pages in memory (0-100): "<<endl;
             cin >> user_parameters.hot_pages_percentage;
             if(user_parameters.hot_pages_percentage < 0 or user_parameters.hot_pages_percentage > 100){
-                cerr<<"Error! Hot pages percentage must be in 0-100 range. crashing.."<<endl;
-                exit(1);
+                cerr<<"Error! Hot pages percentage must be in 0-100 range. Use --help for more information."<<endl;
+                exit(-1);
             }
             cout<<"Enter the probability for hot pages (0-1): "<<endl;
             cin >> user_parameters.hot_pages_probability;
             if(user_parameters.hot_pages_probability < 0 or user_parameters.hot_pages_probability > 1){
-                cerr<<"Error! Hot pages probability must be in 0-1 range. crashing.."<<endl;
-                exit(1);
+                cerr<<"Error! Hot pages probability must be in 0-1 range. Use --help for more information."<<endl;
+                exit(-1);
             }
             if(output_file)
                 freopen(output_file, "a", stdout);
@@ -226,15 +227,15 @@ public:
         return locations_list;
     }
 
-    void runGreedySimulation(Algorithm algo, long long window_size = 0) {
+    void runGreedySimulation(Algorithm algo, unsigned long long window_size = 0) {
         if (reach_steady_state){
             reachSteadyState();
         }
         for (unsigned long long i = 0; i < window_size; i++) {
             ftl->write(data,writing_sequence[i], algo, writing_sequence, i);
         }
-        /* After running LOOK_AHEAD/GENERTIONAL algorithm, now we shoulde run
-         * GREEDY for the rest of writing sequence array */
+        /* After running LOOK_AHEAD/GENERATIONAL algorithm, now we should run
+         * GREEDY for the rest of writing sequence */
         for (unsigned long long i = window_size; i < NUMBER_OF_PAGES; i++) {
             ftl->write(data,writing_sequence[i],GREEDY, writing_sequence, i);
         }
@@ -252,7 +253,7 @@ public:
                 break;
             case GENERATIONAL:
                 cout<<"Starting Generational Algorithm simulation..."<<endl;
-                runGenerationalSimulation(user_parameters.num_of_gen, user_parameters.window_size);
+                runGenerationalSimulation(user_parameters.number_of_generations, user_parameters.window_size);
                 break;
             case WRITING_ASSIGNMENT:
                 cout<<"Starting Writing Assignment Algorithm simulation..."<<endl;
@@ -270,7 +271,8 @@ public:
         int physical_page_writes = ftl->physicalPageWrites-ftl->physicalPageWritesSteady;
         double wa = (double)physical_page_writes/logical_page_writes;
         //double erasure_factor = erases/(NUMBER_OF_PAGES /(double)PAGES_PER_BLOCK);
-        cout<<"Simulation Results:"<<endl<<"Number of erases: "<<erases<<". Write Amplification: "<<wa<<endl;
+        cout << "Simulation Results:" << endl << "Number of erases: " << erases
+        << ". Write Amplification: " << wa << endl;
     }
 
     void runWritingAssignmentSimulation(){
@@ -297,25 +299,30 @@ public:
     }
 
     void getWindowSizeFromUser(){
-        char use_window_size;
-        cout<<"Would you like to use window size parameter? y/n"<<endl;
-        cin>>use_window_size;
-        if(use_window_size != 'y' and use_window_size != 'n'){
-            cerr<<"Error! Answer must be 'y' or 'n'. crashing.."<<endl;
-            exit(1);
+        if(output_file){
+            dup2(fd_stdout, 1);
         }
-        if(use_window_size == 'y'){
-            cout<<"Enter Window Size:"<<endl;
+        char use_window_size_flag;
+        cout << "Would you like to run the simulator in writing window mode? y/n"<<endl;
+        cin >> use_window_size_flag;
+        if(use_window_size_flag != 'y' && use_window_size_flag != 'n'){
+            cerr<<"Error! Answer must be 'y' or 'n'."<<endl;
+            printHelp();
+            exit(-1);
+        }
+        if(use_window_size_flag == 'y'){
+            cout << "Enter Window Size:"<<endl;
             cin >> user_parameters.window_size;
-            if(user_parameters.window_size < 0){
-                cerr<<"Error! Window size is a negative number. crashing.."<<endl;
-                exit(1);
-            }
             if(user_parameters.window_size > NUMBER_OF_PAGES){
-                cerr<<"Error! Window size is bigger than Number Of Pages. crashing.."<<endl;
-                exit(1);
+                cerr<<"Error! Window size is bigger than Number Of Pages."<<endl;
+                printHelp();
+                exit(-1);
             }
+            if(output_file)
+                freopen(output_file, "a", stdout);
+            cout << "Window size set successfully to n = " << user_parameters.window_size << "." << endl;
         }
+        /* If no window size is chosen we set it to be N */
         else{
             user_parameters.window_size = NUMBER_OF_PAGES;
         }
@@ -325,20 +332,22 @@ public:
         if(output_file){
             dup2(fd_stdout, 1);
         }
-        cout<<"Enter number of generations for Generational GC: (Enter 0 for best number of generations argument)"<<endl;
-        cin >> user_parameters.num_of_gen;
+        cout << "Enter number of generations for Generational GC (Enter 0 for auto selection):" << endl;
+        cin >> user_parameters.number_of_generations;
         if(output_file)
             freopen(output_file, "a", stdout);
-        if (user_parameters.num_of_gen > PHYSICAL_BLOCK_NUMBER - LOGICAL_BLOCK_NUMBER){
-            cerr << "Error! number of generations must be at least T-U. crashing.." <<endl;
-            exit(1);
+        if (user_parameters.number_of_generations > PHYSICAL_BLOCK_NUMBER - LOGICAL_BLOCK_NUMBER){
+            cerr << "Error! number of generations must be at least T-U. Use --help for more information." << endl;
+            exit(-1);
         }
-        if (user_parameters.num_of_gen < 0){
-            cerr<<"Error! Window size is a negative number. crashing.."<<endl;
-            exit(1);
+        if (user_parameters.number_of_generations < 0){
+            cerr<<"Error! Window size is a negative number. Use --help for more information." << endl;
+            exit(-1);
         }
-        if(user_parameters.num_of_gen == 0)
-            user_parameters.num_of_gen = ftl->optimized_params.second;
+        if(user_parameters.number_of_generations == 0)
+            user_parameters.number_of_generations = ftl->optimized_params.second;
+
+        cout << "Number of generations set to " << user_parameters.number_of_generations << " generations." << endl;
     }
 
 
@@ -529,7 +538,7 @@ public:
         return logical_pages_location_map->at(lpn).getFirstLocationAfterIndex(page_index);
     }
 
-    void runGenerationalSimulation(int num_of_gens, long long window_size) {
+    void runGenerationalSimulation(int num_of_gens, unsigned long long window_size) {
         if (reach_steady_state){
             reachSteadyState();
         }
@@ -544,8 +553,11 @@ public:
             ftl->writeGenerational(data, writing_sequence[i], generation, writing_sequence, i);
         }
         for(std::map<int,Block*>::iterator it = ftl->gen_blocks.begin(); it!=ftl->gen_blocks.end(); it++){
-            if(it->second and it->second->valid != 0)
+            /* push generational blocks to freelist */
+            if(it->second){
+                assert(it->second->nextFree != NA);
                 ftl->freeList.push_back(it->second);
+            }
         }
         ftl->gen_blocks.clear();
         for (unsigned long long i = window_size; i < NUMBER_OF_PAGES; i++) {
@@ -562,7 +574,7 @@ public:
                 return i;
             bound += bound;
         }
-        return num_of_gens-1;
+        return num_of_gens - 1;
     }
 
 };

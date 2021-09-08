@@ -107,7 +107,7 @@ public:
 
 	int valid;
 
-	/* next free page (0-63) OR NA for full */
+	/* next free page in the range [0,Z-1] OR NA for full */
 
 	int nextFree;
 
