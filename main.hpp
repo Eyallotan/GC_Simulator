@@ -5,6 +5,7 @@
 
 int PHYSICAL_BLOCK_NUMBER, LOGICAL_BLOCK_NUMBER, PAGES_PER_BLOCK, PAGE_SIZE;
 unsigned long long NUMBER_OF_PAGES;
+bool WINDOW_SIZE_FLAG;
 /* PHYSICAL_BLOCK_NUMBER - number of physical blocks
  * LOGICAL_BLOCK_NUMBER - number of logical blocks
  * PAGES_PER_BLOCK - number of pages per block

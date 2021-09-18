@@ -64,6 +64,8 @@ public:
      */
     UserParameters user_parameters;
 
+    WindowSizeFlag window_size_flag;
+
     /* FTL memory layout object */
     FTL* ftl;
 
@@ -85,8 +87,8 @@ public:
      * you should note that some changes may be needed to use only the parameters passed to the class
      * c'tor (and this is better coding practice).
      */
-    AlgoRunner(long long number_of_pages, PageDistribution page_dist, Algorithm algo) :
-                                                                        algo(algo), number_of_pages(number_of_pages), page_dist(page_dist), ftl(nullptr),
+    AlgoRunner(long long number_of_pages, PageDistribution page_dist, Algorithm algo, WindowSizeFlag window_size_flag) :
+                                                                        algo(algo), number_of_pages(number_of_pages), page_dist(page_dist), window_size_flag(window_size_flag), ftl(nullptr),
                                                                         data(nullptr), reach_steady_state(true), print_mode(false){
         /* generates writing sequence for uniform or hot-cold distribution */
         generateWritingSequence();
@@ -167,6 +169,7 @@ public:
         ftl->logicalPageWritesSteady = ftl->logicalPageWrites;
         ftl->physicalPageWritesSteady = ftl->physicalPageWrites;
         cout<<"Steady State Reached..."<<endl;
+        cout << endl;
     }
 
     /* get the number of unique logical pages in writing_sequence */
@@ -206,8 +209,12 @@ public:
     }
 
     void getUserParams(){
-        if(algo != GREEDY)
-            getWindowSizeFromUser();
+        if(algo != GREEDY) {
+            if (window_size_flag == WINDOW_SIZE_ON)
+                getWindowSizeFromUser();
+            if (window_size_flag == WINDOW_SIZE_OFF)
+                user_parameters.window_size = NUMBER_OF_PAGES;
+        }
         if(algo == GENERATIONAL)
             getNumOfGenerationsFromUser();
     }
@@ -302,30 +309,25 @@ public:
         if(output_file){
             dup2(fd_stdout, 1);
         }
-        char use_window_size_flag;
-        cout << "Would you like to run the simulator in writing window mode? y/n"<<endl;
-        cin >> use_window_size_flag;
-        if(use_window_size_flag != 'y' && use_window_size_flag != 'n'){
-            cerr<<"Error! Answer must be 'y' or 'n'."<<endl;
+//        char use_window_size_flag;
+//        cout << "Would you like to run the simulator in writing window mode? y/n"<<endl;
+//        cin >> use_window_size_flag;
+//        if(use_window_size_flag != 'y' && use_window_size_flag != 'n'){
+//            cerr<<"Error! Answer must be 'y' or 'n'."<<endl;
+//            printHelp();
+//            exit(-1);
+//        }
+        cout << "Enter Window Size:"<<endl;
+        cin >> user_parameters.window_size;
+        if(user_parameters.window_size > NUMBER_OF_PAGES){
+            cerr<<"Error! Window size is bigger than Number Of Pages."<<endl;
             printHelp();
             exit(-1);
         }
-        if(use_window_size_flag == 'y'){
-            cout << "Enter Window Size:"<<endl;
-            cin >> user_parameters.window_size;
-            if(user_parameters.window_size > NUMBER_OF_PAGES){
-                cerr<<"Error! Window size is bigger than Number Of Pages."<<endl;
-                printHelp();
-                exit(-1);
-            }
-            if(output_file)
-                freopen(output_file, "a", stdout);
-            cout << "Window size set successfully to n = " << user_parameters.window_size << "." << endl;
-        }
-        /* If no window size is chosen we set it to be N */
-        else{
-            user_parameters.window_size = NUMBER_OF_PAGES;
-        }
+        if(output_file)
+            freopen(output_file, "a", stdout);
+        cout << "Window size set successfully to n = " << user_parameters.window_size << "." << endl;
+        cout << endl;
     }
 
     void getNumOfGenerationsFromUser(){
@@ -348,6 +350,7 @@ public:
             user_parameters.number_of_generations = ftl->optimized_params.second;
 
         cout << "Number of generations set to " << user_parameters.number_of_generations << " generations." << endl;
+        cout << endl;
     }
 
 

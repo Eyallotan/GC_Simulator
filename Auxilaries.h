@@ -27,9 +27,15 @@ typedef enum {
     HOT, COLD, COIN_TOSS
 } RandVariable;
 
+typedef enum {
+    WINDOW_SIZE_ON, WINDOW_SIZE_OFF, INVALID_WINDOW_SIZE_FLAG
+}WindowSizeFlag;
+
 Algorithm algoStringToEnum(const char* string);
 
 PageDistribution distributionStringToEnum(const char* string);
+
+WindowSizeFlag windowSizeFlagToEnum(const char* string);
 
 unsigned int min(unsigned int a,unsigned int b);
 

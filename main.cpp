@@ -42,7 +42,7 @@ void printHelp()
 }
 
 int main(int argc, char** argv) {
-	if (argc < 8) {
+	if (argc < 9) {
 	    if (argc == 2 && strcmp("--help", argv[1]) == 0){
 	        printHelp();
 	        return 0;
@@ -53,8 +53,8 @@ int main(int argc, char** argv) {
 		return -1;
 	}
 
-	if (argc == 9) {
-		output_file = argv[8];
+	if (argc == 10) {
+		output_file = argv[9];
 		freopen(output_file, "a", stdout);
 	}
 
@@ -63,13 +63,19 @@ int main(int argc, char** argv) {
 	PAGES_PER_BLOCK = atoi(argv[3]);
 	PAGE_SIZE = atoi(argv[4]);
 	NUMBER_OF_PAGES = atoll(argv[5]);
-	PageDistribution page_dist = distributionStringToEnum(argv[6]);
+	WindowSizeFlag window_size_flag = windowSizeFlagToEnum(argv[6]);
+	if (window_size_flag == INVALID_WINDOW_SIZE_FLAG){
+		cerr << "Invalid Window Size Flag Parameter!" << endl;
+		printHelp();
+		return -1;
+	}
+	PageDistribution page_dist = distributionStringToEnum(argv[7]);
 	if (page_dist == INVALID_DIST){
         cerr << "Invalid Distribution Parameter!" << endl;
         printHelp();
         return -1;
 	}
-	Algorithm algo = algoStringToEnum(argv[7]);
+	Algorithm algo = algoStringToEnum(argv[8]);
 	if (algo == INVALID_ALGO){
         cerr << "Invalid Algorithm Parameter!" << endl;
         printHelp();
@@ -85,15 +91,20 @@ int main(int argc, char** argv) {
 	cout << "Alpha:\t\t\t" << ALPHA << endl;
 	cout << "Over Provisioning:\t"<< (float)(PHYSICAL_BLOCK_NUMBER-LOGICAL_BLOCK_NUMBER)/LOGICAL_BLOCK_NUMBER<<endl;
     cout << "Number of Pages:\t" << NUMBER_OF_PAGES << endl;
-    cout << "Page Distribution:\t" << argv[6] << endl;
-    cout << "GC Algorithm:\t\t" << argv[7] << endl;
+    cout << "Window Size Flag:\t" << ((window_size_flag == WINDOW_SIZE_ON and algo != GREEDY) ? "ON" : "OFF") << endl;
+    cout << "Page Distribution:\t" << argv[7] << endl;
+    cout << "GC Algorithm:\t\t" << argv[8] << endl;
+    cout << endl;
+
+	if(window_size_flag == WINDOW_SIZE_ON and algo == GREEDY)
+		cout << "Window Size Flag Is On But Irrelevant For Greedy Algorithm. Using Window Size Flag Off." << endl;
 
 
     /* activate random number generator seed */
 	seed();
 
 	/* generate scheduledGC object */
-    AlgoRunner* scg = new AlgoRunner(NUMBER_OF_PAGES, page_dist, algo);
+    AlgoRunner* scg = new AlgoRunner(NUMBER_OF_PAGES, page_dist, algo, window_size_flag);
 
     /* if you wish to activate print mode remove comment */
     //scg->setPrintMode(true);
@@ -108,7 +119,7 @@ int main(int argc, char** argv) {
     /* cleanup */
     delete scg;
     output_file = nullptr;
-	if (argc == 9){
+	if (argc == 10){
 		fclose(stdout);
 	}
 
