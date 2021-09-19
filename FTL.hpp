@@ -241,10 +241,9 @@ public:
 	bool print_mode;
 
     /* optimized parameters for the given OP that we are currently running with.
-     * This is a pair (n,Y) where:
+     * This is a pair (n,num_of_generations) where:
      * n - the denominator's power in the block score function
-     * num_of_gens - best number of generations for generational algorithm
-     * Y - the max range for Y when searching for blocks to erase
+     * num_of_generations - best number of generations for generational algorithm
      * */
     std::pair<int,int> optimized_params;
 
@@ -263,7 +262,8 @@ public:
 				blocks[i]->pages[j].blockNo = i;
 			}
 		}
-        optimized_params = getOptimizedParams();
+        optimized_params.first = getOptimizedIValParam();
+		optimized_params.second = std::max((int)min(LOGICAL_BLOCK_NUMBER/OVER_LOADING_FACTOR, PHYSICAL_BLOCK_NUMBER-LOGICAL_BLOCK_NUMBER), 2);
     }
 
 	~FTL() {
@@ -398,21 +398,20 @@ public:
         return block_score;
 	}
 
-    #define X(lower_bound, upper_bound, i_val, num_of_gens, y_val) \
+    #define X(lower_bound, upper_bound, i_val) \
         if (OP > lower_bound && OP <= upper_bound){     \
-            return std::pair<int,int>{i_val,num_of_gens};     \
+            return i_val;     \
         }
-
         /**
          * Get the optimized parameters for running the different algorithms on the memory
          * configuration based on the over-provisioning factor.
          * These parameters were found by running empiric experiments.
          * */
-        std::pair<int,int> getOptimizedParams()
+        int getOptimizedIValParam()
         {
             float OP = (float)(PHYSICAL_BLOCK_NUMBER-LOGICAL_BLOCK_NUMBER)/LOGICAL_BLOCK_NUMBER;
             ALGO_PARAMS_TABLE
-            return std::pair<int,int>{}; // shouldn't get here
+            return -1; // shouldn't get here
         }
 
     #undef X
