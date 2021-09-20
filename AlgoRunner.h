@@ -309,14 +309,6 @@ public:
         if(output_file){
             dup2(fd_stdout, 1);
         }
-//        char use_window_size_flag;
-//        cout << "Would you like to run the simulator in writing window mode? y/n"<<endl;
-//        cin >> use_window_size_flag;
-//        if(use_window_size_flag != 'y' && use_window_size_flag != 'n'){
-//            cerr<<"Error! Answer must be 'y' or 'n'."<<endl;
-//            printHelp();
-//            exit(-1);
-//        }
         cout << "Enter Window Size:"<<endl;
         cin >> user_parameters.window_size;
         if(user_parameters.window_size > NUMBER_OF_PAGES){

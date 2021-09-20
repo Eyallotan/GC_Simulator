@@ -91,13 +91,10 @@ int main(int argc, char** argv) {
 	cout << "Alpha:\t\t\t" << ALPHA << endl;
 	cout << "Over Provisioning:\t"<< (float)(PHYSICAL_BLOCK_NUMBER-LOGICAL_BLOCK_NUMBER)/LOGICAL_BLOCK_NUMBER<<endl;
     cout << "Number of Pages:\t" << NUMBER_OF_PAGES << endl;
-    cout << "Window Size Flag:\t" << ((window_size_flag == WINDOW_SIZE_ON and algo != GREEDY) ? "ON" : "OFF") << endl;
     cout << "Page Distribution:\t" << argv[7] << endl;
     cout << "GC Algorithm:\t\t" << argv[8] << endl;
     cout << endl;
 
-	if(window_size_flag == WINDOW_SIZE_ON and algo == GREEDY)
-		cout << "Window Size Flag Is On But Irrelevant For Greedy Algorithm. Using Window Size Flag Off." << endl;
 
 
     /* activate random number generator seed */

@@ -262,8 +262,8 @@ public:
 				blocks[i]->pages[j].blockNo = i;
 			}
 		}
-        optimized_params.first = getOptimizedIValParam();
-		optimized_params.second = std::max((int)min(LOGICAL_BLOCK_NUMBER/OVER_LOADING_FACTOR, PHYSICAL_BLOCK_NUMBER-LOGICAL_BLOCK_NUMBER), 2);
+        optimized_params.first = getOptimizedAlphaValParam();
+		optimized_params.second = std::max((int)min(LOGICAL_BLOCK_NUMBER/OVER_LOADING_FACTOR, PHYSICAL_BLOCK_NUMBER-LOGICAL_BLOCK_NUMBER), 1);
     }
 
 	~FTL() {
@@ -407,7 +407,7 @@ public:
          * configuration based on the over-provisioning factor.
          * These parameters were found by running empiric experiments.
          * */
-        int getOptimizedIValParam()
+        int getOptimizedAlphaValParam()
         {
             float OP = (float)(PHYSICAL_BLOCK_NUMBER-LOGICAL_BLOCK_NUMBER)/LOGICAL_BLOCK_NUMBER;
             ALGO_PARAMS_TABLE

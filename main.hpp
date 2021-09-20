@@ -7,7 +7,6 @@
 
 int PHYSICAL_BLOCK_NUMBER, LOGICAL_BLOCK_NUMBER, PAGES_PER_BLOCK, PAGE_SIZE;
 unsigned long long NUMBER_OF_PAGES;
-bool WINDOW_SIZE_FLAG;
 /* PHYSICAL_BLOCK_NUMBER - number of physical blocks
  * LOGICAL_BLOCK_NUMBER - number of logical blocks
  * PAGES_PER_BLOCK - number of pages per block
@@ -19,7 +18,6 @@ char* output_file = nullptr;
 
 void printHelp();
 
-//TODO: BUGGY! fix
 /* (lower bound, upper_bound, block score denominator's power */
 #define ALGO_PARAMS_TABLE                           \
 X(0, (float)11/105, 7)                        \
