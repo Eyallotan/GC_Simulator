@@ -338,8 +338,10 @@ public:
             cerr<<"Error! Window size is a negative number. Use --help for more information." << endl;
             exit(-1);
         }
-        if(user_parameters.number_of_generations == 0)
+        if(user_parameters.number_of_generations == 0){
             user_parameters.number_of_generations = ftl->optimized_params.second;
+            cout << "Using heuristic to select number of generations." << endl;
+        }
 
         cout << "Number of generations set to " << user_parameters.number_of_generations << " generations." << endl;
         cout << endl;
@@ -567,7 +569,7 @@ public:
         for (int i = 0; i < num_of_gens-1; ++i) {
             if(page_score < bound)
                 return i;
-            bound += bound;
+            bound += interval;
         }
         return num_of_gens - 1;
     }
