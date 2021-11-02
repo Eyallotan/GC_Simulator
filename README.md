@@ -2,7 +2,7 @@
 
 # Flash GC Simulator
 
-This simulator enables to run various garbage collection (GC) algorithms on an SSD memory layout. we implement a fully customizable infastructure that allows you to run your algorithm of choice on many different memory settings and record statistics such as number of erases and write amplification.
+This simulator enables to run various garbage collection (GC) algorithms on an SSD memory layout. We implement a fully customizable infastructure that allows you to run your algorithm of choice on many different memory settings and record statistics such as number of erases and write amplification.
 
 For full details about the theoretical model and the algorithms implemented in this simulator please read the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf). In the report you will find all the needed prerequisites, along with a full breakdown of each algorithm, experiments results and more. 
 
@@ -27,10 +27,12 @@ These are the parameters you must set for each simulation:
 3. Pages per block (Z)
 4. Page size (in bytes)
 5. Number of pages (N) 
-6. Data distribution
-7. GC algorithm
-8. Optional parameter: Filename to redirect output to 
+6. Window flag
+7. Data distribution
+8. GC algorithm
+9. Optional parameter: Filename to redirect output to 
 
+* For window flag choose between ```window_on``` or ```window_off```. If you choose to turn on the window flag, you will be asked to choose the window size. 
 * For data distribution parameter choose between ```uniform``` or ```hot_cold```. If you choose hot/cold distribution, you will be asked to choose the hot page percentage and the probability for a hot page.
 * For GC algorithm choose between the following:
 1. ```greedy```
@@ -40,7 +42,7 @@ These are the parameters you must set for each simulation:
 
 For example: 
 ```bash
-$ ./Simulator 64 50 32 4096 100000 uniform greedy
+$ ./Simulator 64 50 32 4096 100000 window_off uniform greedy
 Starting GC Simulator!
 Physical Blocks:        64
 Logical Blocks:         50
@@ -57,7 +59,7 @@ Steady State Reached...
 Simulation Results:
 Number of erases: 7395. Write Amplification: 2.36627
 
-$ ./Simulator 64 50 32 4096 100000 uniform greedy_lookahead
+$ ./Simulator 64 50 32 4096 100000 window_off uniform greedy_lookahead
 Starting GC Simulator!
 Physical Blocks:        64
 Logical Blocks:         50
@@ -74,7 +76,7 @@ Steady State Reached...
 Simulation Results:
 Number of erases: 7333. Write Amplification: 2.34665
 
-$ ./Simulator 64 50 32 4096 100000 uniform generational
+$ ./Simulator 64 50 32 4096 100000 window_off uniform generational
 Starting GC Simulator!
 Physical Blocks:        64
 Logical Blocks:         50
@@ -93,6 +95,36 @@ Steady State Reached...
 Simulation Results:
 Number of erases: 7053. Write Amplification: 2.25694
 ```
+
+### Window flag
+We added a window flag option that let's you run simulations using a fixed window of future writes, while all other writes are generated on the spot (with no future knowledge). For example: 
+```bash
+$ ./Simulator 64 55 32 4096 10000 window_on uniform greedy_lookahead
+Starting GC Simulator!
+Physical Blocks:        64
+Logical Blocks:         55
+Pages/Block:            32
+Page Size:              4096
+Alpha:                  0.859375
+Over Provisioning:      0.163636
+Number of Pages:        10000
+Page Distribution:      uniform
+GC Algorithm:           greedy_lookahead
+
+Enter Window Size:
+2000
+Window size set successfully to n=2000.
+
+Starting Greedy LookAhead Algorithm simulation...
+Reaching Steady State...
+Steady State Reached...
+
+Simulation Results:
+Number of erases: 1063. Write Amplification: 3.4016
+```
+The simulation will first generate a unifromly distributed writing sequence with length of 2000 (a.k.a window size) and use Greedy Lookahead algorithm to write all the pages in the window. Note that the future knowledge is now bounded by the window size, i.e., when we reach write number 1995, we only have 5 future writes as reference, even though we still have 8000+ writes remaining for the whole simulation. After completing the writes within the window size, the simulation will write all remaining pages using the classic Greedy GC algorithm. 
+
+This feature can be usefull to simulate the effect of write ahead buffers in RAM (non-volotile memory) that provide us with a short future of writes. This gives us the oppurtunity to benefit from using our algorithms. As n (the window size) approaches N (Total number of pages), we get a writing performance that approaches the performance of the improved algorithm (Greedy Lookahead / Generational). As n approaces 0 we get a performance that approaches the perforamnce of the classic Greedy GC. For more results and deep dive analysis see the [project report].
 
 ### Print Mode
 We have implemented a print mode option that reflects block and page statistics as the simulator runs, along with information about the number of logical writes and more useful information. The print mode option is turned off by default and should not be used unless you redirect your output to a file (otherwise print time will probably make the simulation run for a very long time). if you wish to turn on the print mode you can comment out the following line in [```main.cpp```](main.cpp):
