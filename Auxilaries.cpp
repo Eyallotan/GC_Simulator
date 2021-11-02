@@ -40,9 +40,9 @@ PageDistribution distributionStringToEnum(const char* string){
 }
 
 WindowSizeFlag windowSizeFlagToEnum(const char* string){
-    if(strcmp(string, "window_size_on") == 0)
+    if(strcmp(string, "window_on") == 0)
         return WINDOW_SIZE_ON;
-    if(strcmp(string, "window_size_off") == 0)
+    if(strcmp(string, "window_off") == 0)
         return WINDOW_SIZE_OFF;
     return INVALID_WINDOW_SIZE_FLAG;
 }

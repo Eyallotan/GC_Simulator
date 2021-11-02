@@ -10,9 +10,10 @@ using namespace std;
  * #3:PAGES_PER_BLOCK
  * #4:PAGE_SIZE
  * #5:NUMBER_OF_PAGES
- * #6:DATA_DISTRIBUTION
- * #7:ALGORITHM
- * #8:optional parameter - filename to redirect output to
+ * #6:WINDOW_FLAG
+ * #7:DATA_DISTRIBUTION
+ * #8:ALGORITHM
+ * #9:optional parameter - filename to redirect output to
  */
 
 /**
@@ -27,18 +28,21 @@ void printHelp()
             "3. Pages per block (Z).\n"
             "4. Page size (in bytes).\n"
             "5. Number of pages (N).\n"
-            "6. Data distribution.\n"
-            "7. GC algorithm.\n"
-            "8. Optional parameter: Filename to redirect output to." << endl;
+            "6. Window flag.\n"
+            "7. Data distribution.\n"
+            "8. GC algorithm.\n"
+            "9. Optional parameter: Filename to redirect output to." << endl;
     cout << "For data distribution parameter choose between uniform or hot_cold. If you choose hot/cold distribution, " << endl
          << "you will be asked to choose the hot page percentage and the probability for a hot page." << endl;
+    cout << "For window flag choose between window_on or window_off. If you choose window_on you will be asked to " << endl
+         << "choose the window size. Window size should be between 0 and N." << endl;
     cout << "For GC algorithm choose between the following:\n"
             "1. greedy.\n"
             "2. greedy_lookahead.\n"
-            "3. writing_assignment (initial version).\n"
-            "4. generational. If you choose this option you will be prompt to choose the number of generations. " << endl
-            << "Make sure that the number of generations is always larger then T-U (this will be enforced by the simulator)." << endl
-            << "If you choose number of generations to be 0, the simulator will choose the optimized parameter based on the OP (over provisioning)." << endl;
+            "3. generational. If you choose this option you will be prompt to choose the number of generations. " << endl
+            << "Make sure that the number of generations is between 1 and T-U (this will be enforced by the simulator)." << endl
+            << "If you choose number of generations to be 0, the simulator will choose the number of generations using " << endl
+            << "a heurisitc function." << endl;
 }
 
 int main(int argc, char** argv) {

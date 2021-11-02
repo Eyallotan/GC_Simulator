@@ -318,7 +318,7 @@ public:
         }
         if(output_file)
             freopen(output_file, "a", stdout);
-        cout << "Window size set successfully to n = " << user_parameters.window_size << "." << endl;
+        cout << "Window size set successfully to n=" << user_parameters.window_size << "." << endl;
         cout << endl;
     }
 
@@ -326,7 +326,7 @@ public:
         if(output_file){
             dup2(fd_stdout, 1);
         }
-        cout << "Enter number of generations for Generational GC (Enter 0 for auto selection):" << endl;
+        cout << "Enter number of generations for Generational GC (Enter 0 for heuristic selection):" << endl;
         cin >> user_parameters.number_of_generations;
         if(output_file)
             freopen(output_file, "a", stdout);
@@ -340,7 +340,7 @@ public:
         }
         if(user_parameters.number_of_generations == 0){
             user_parameters.number_of_generations = ftl->optimized_params.second;
-            cout << "Using heuristic to select number of generations." << endl;
+            cout << "Using Overloading facror heuristic to select number of generations..." << endl;
         }
 
         cout << "Number of generations set to " << user_parameters.number_of_generations << " generations." << endl;
