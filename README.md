@@ -40,7 +40,8 @@ These are the parameters you must set for each simulation:
 3. ```generational```. If you choose this option you will be prompt to choose the number of generations. You should make sure that the number of generations is at least 1 and smaller than T-U (this will also be enforced by the simulator). In the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf) you can find an deep dive analysis regarding the selection of the optimal number of generations a given simulation. We also implemented a heuristic function that can choose the number of generations for your simulation based on the given parameters (T,U,Z). In order to use the heuristic function, choose 0 as the number of generations. 
 4. ```writing_assingment``` - This algorithm was only partially implemented since it did not improve the writing performance and we decided to proceed in different directions for the time being. Therefore it doesn't support all features such as window feature etc. You can check out the source code for full documentation and TODOS in this subject.
 
-For example: 
+### Examples
+
 ```bash
 $ ./Simulator 64 50 32 4096 100000 window_off uniform greedy
 Starting GC Simulator!
@@ -126,6 +127,39 @@ Steady State Reached...
 
 Simulation Results:
 Number of erases: 7926. Write Amplification: 2.53632
+
+$ ./Simulator 64 52 32 4096 100000 window_on hot_cold generational
+Starting GC Simulator!
+Physical Blocks:        64
+Logical Blocks:         52
+Pages/Block:            32
+Page Size:              4096
+Alpha:                  0.8125
+Over Provisioning:      0.230769
+Number of Pages:        100000
+Page Distribution:      hot_cold
+GC Algorithm:           generational
+
+Please enter parameters for Hot/Cold memory simulation.
+Enter the hot page percentage out of all logical pages in memory (0-100):
+5
+Enter the probability for hot pages (0-1):
+0.9
+Enter Window Size:
+50000
+Window size set successfully to n=50000.
+
+Enter number of generations for Generational GC (Enter 0 for heuristic selection):
+0
+Using Overloading facror heuristic to select number of generations...
+Number of generations set to 3 generations.
+
+Starting Generational Algorithm simulation...
+Reaching Steady State...
+Steady State Reached...
+
+Simulation Results:
+Number of erases: 10489. Write Amplification: 3.35652
 ```
 
 ### Window flag
