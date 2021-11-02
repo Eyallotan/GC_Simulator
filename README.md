@@ -37,8 +37,8 @@ These are the parameters you must set for each simulation:
 * For GC algorithm choose between the following:
 1. ```greedy```
 2. ```greedy_lookahead```
-3. ```writing_assingment``` (This algorithm is still a work in progress..)
-4. ```generational```. If you choose this option you will be prompt to choose the number of generations. You should make sure that the number of generations is at least 1 and smaller than T-U (this will also be enforced by the simulator). In the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf) you can find an deep dive analysis regarding the selection of the optimal number of generations a given simulation. We also implemented a heuristic function that can choose the number of generations for your simulation based on the given parameters (T,U,Z). In order to use the heuristic function, choose 0 as the number of generations. 
+3. ```generational```. If you choose this option you will be prompt to choose the number of generations. You should make sure that the number of generations is at least 1 and smaller than T-U (this will also be enforced by the simulator). In the [project report](https://github.com/Eyallotan/GC_Simulator/blob/d9eda9a190eb17bbe6059b055a68dc30678620fb/Garbage%20Collection%20Algorithms%20for%20Flash%20Memories.pdf) you can find an deep dive analysis regarding the selection of the optimal number of generations a given simulation. We also implemented a heuristic function that can choose the number of generations for your simulation based on the given parameters (T,U,Z). In order to use the heuristic function, choose 0 as the number of generations. 
+4. ```writing_assingment``` - This algorithm was only partially implemented since it did not improve the writing performance and we decided to proceed in different directions for the time being. Therefore it doesn't support all features such as window feature etc. You can check out the source code for full documentation and TODOS in this subject.
 
 For example: 
 ```bash
