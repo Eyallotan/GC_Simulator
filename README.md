@@ -347,5 +347,6 @@ Some of our ideas and afterthoughts are written in the [project report](https://
 
 ## License
 
-The Simulator FTL interface is based on the work of Alex Yucovich. Thank you for letting us base our project on his work.
 All rights are reserved to Eyal Lotan and Dor Sura.
+The Simulator FTL interface is based on the work of Alex Yucovich.
+
