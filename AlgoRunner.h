@@ -340,7 +340,7 @@ public:
         }
         if(user_parameters.number_of_generations == 0){
             user_parameters.number_of_generations = ftl->optimized_params.second;
-            cout << "Using Overloading facror heuristic to select number of generations..." << endl;
+            cout << "Using Overloading factor heuristic to select number of generations..." << endl;
         }
 
         cout << "Number of generations set to " << user_parameters.number_of_generations << " generations." << endl;
